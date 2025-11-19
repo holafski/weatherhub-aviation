@@ -1,0 +1,510 @@
+/* ==================================================================
+   1. VARIABLES & THEME CONFIGURATION
+   ================================================================== */
+:root {
+    /* --- Dark Mode (Default / Ops Room) --- */
+    --bg-body: #121212;
+    --bg-panel: #1e1e1e;
+    --bg-nav: #181818;
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --border-color: #333;
+    --accent-color: #3498db;
+    --hover-bg: rgba(255,255,255,0.05);
+    
+    /* --- Aviation Flight Category Colors --- */
+    --cat-vfr: #2ecc71;  /* Green  (Visual Flight Rules) */
+    --cat-mvfr: #3498db; /* Blue   (Marginal VFR) */
+    --cat-ifr: #e74c3c;  /* Red    (Instrument Flight Rules) */
+    --cat-lifr: #9b59b6; /* Purple (Low IFR) */
+    
+    /* --- Fonts --- */
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+}
+
+/* --- Light Mode Overrides --- */
+[data-theme="light"] {
+    --bg-body: #f0f2f5;
+    --bg-panel: #ffffff;
+    --bg-nav: #ffffff;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+    --hover-bg: #f8f9fa;
+}
+
+/* ==================================================================
+   2. BASE STYLES & RESET
+   ================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-ui);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden; /* Prevent scroll, creates "Dashboard" feel */
+}
+
+.hidden { display: none !important; }
+
+/* ==================================================================
+   3. NAVIGATION BAR & CLOCKS
+   ================================================================== */
+.navbar {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+    background-color: var(--bg-nav);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-left { display: flex; align-items: center; gap: 2rem; }
+
+.brand {
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+}
+
+/* Navigation Tabs (Metwatch vs Forecast) */
+.nav-links {
+    display: flex;
+    gap: 5px;
+    background: rgba(0,0,0,0.2);
+    padding: 3px;
+    border-radius: 6px;
+}
+
+.nav-link {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-link:hover { color: var(--text-main); }
+
+.nav-link.active {
+    background-color: var(--accent-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- Multi-Clock Bar --- */
+.clock-bar {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.clock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+
+.clock-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 3px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.clock-time {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+/* --- Settings Dropdown --- */
+.nav-right { position: relative; }
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-main);
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+.icon-btn:hover { background-color: var(--hover-bg); }
+
+.dropdown-menu {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    padding: 0;
+    width: 200px;
+    z-index: 9999;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.dropdown-section { padding: 8px 0; }
+.dropdown-divider { height: 1px; background: var(--border-color); width: 100%; }
+
+.dropdown-header {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    padding: 5px 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.dropdown-item {
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: block;
+    transition: background 0.2s;
+}
+.dropdown-item:hover { background: var(--hover-bg); }
+
+/* Clock Toggles in Dropdown */
+.clock-toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 15px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.clock-toggle-row:hover { background: var(--hover-bg); }
+.clock-toggle-row span { color: var(--text-main); }
+.clock-toggle-row input { cursor: pointer; accent-color: var(--accent-color); }
+
+
+/* ==================================================================
+   4. DASHBOARD LAYOUT (GRID)
+   ================================================================== */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 350px 1fr; /* Fixed Sidebar | Fluid Map */
+    height: calc(100vh - 50px);
+}
+
+/* ==================================================================
+   5. SIDEBAR STYLES (OBSERVATIONS & TOOLS)
+   ================================================================== */
+.sidebar {
+    background-color: var(--bg-panel);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.sidebar-header h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: var(--text-main);
+}
+
+/* Tabs */
+.tab-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    background-color: rgba(0,0,0,0.2);
+    padding: 4px;
+    border-radius: 6px;
+}
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.tab-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+/* Observation Feed */
+.obs-list {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.obs-card {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.obs-card:hover { background-color: var(--hover-bg); }
+
+/* Category Colors */
+.obs-card.vfr { border-left-color: var(--cat-vfr); }
+.obs-card.ifr { border-left-color: var(--cat-ifr); }
+.obs-card.mvfr { border-left-color: var(--cat-mvfr); }
+.obs-card.lifr { border-left-color: var(--cat-lifr); }
+.obs-card.unk { border-left-color: #7f8c8d; }
+
+.obs-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.station-id { font-weight: 700; font-size: 1.1rem; }
+.flight-cat { font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 2px; color: #000; }
+
+.vfr .flight-cat { background: var(--cat-vfr); }
+.ifr .flight-cat { background: var(--cat-ifr); }
+.mvfr .flight-cat { background: var(--cat-mvfr); }
+.lifr .flight-cat { background: var(--cat-lifr); }
+.unk .flight-cat { background: #7f8c8d; }
+
+.data-label {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.raw-text {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    white-space: pre-wrap; /* Preserves line breaks for TAFs */
+}
+
+/* Forecast Tools Sidebar Styles */
+.tool-section { padding: 1rem; border-bottom: 1px solid var(--border-color); }
+.tool-section h4 { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; }
+.tool-select { width: 100%; padding: 8px; background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; }
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; cursor: pointer; padding: 8px; border-radius: 4px; }
+.radio-item:hover { background: var(--hover-bg); }
+.info-box { background: rgba(52, 152, 219, 0.1); border-left: 3px solid var(--accent-color); padding: 10px; font-size: 0.8rem; color: var(--text-muted); }
+
+
+/* ==================================================================
+   6. MAP SECTION & OVERLAYS
+   ================================================================== */
+.map-section {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#map, #map-forecast {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Top Right Floating Controls */
+.map-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.layer-btn {
+    background: var(--bg-panel);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    min-width: 110px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-icon { font-size: 1rem; }
+
+.layer-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-main);
+    transform: translateX(-2px);
+}
+
+.layer-btn.active {
+    background: var(--bg-panel);
+    color: var(--cat-vfr);
+    border-left: 4px solid var(--cat-vfr);
+    box-shadow: inset 0 0 10px rgba(46, 204, 113, 0.1);
+}
+
+/* --- RADAR TIMELINE (Bottom Control Bar) --- */
+.timeline-container {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    background: rgba(30, 30, 30, 0.9); /* Always dark for contrast */
+    backdrop-filter: blur(5px);
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: opacity 0.3s ease;
+}
+
+.timeline-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.timeline-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+.timeline-btn:hover { color: #fff; }
+
+.timeline-time {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #e0e0e0; /* Always light text on timeline */
+    min-width: 65px;
+    text-align: right;
+    font-weight: 700;
+}
+
+/* Range Slider Styling */
+input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    background: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -6px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    transition: transform 0.1s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+
+/* ==================================================================
+   7. MODAL (CHARTS)
+   ================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: var(--bg-panel);
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-nav);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-body {
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    background: var(--bg-body);
+}
