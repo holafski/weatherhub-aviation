@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherHub METWATCH</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="brand">
+                <span class="icon">✈️</span> WEATHERHUB
+            </div>
+            <div class="nav-links">
+                <button id="nav-metwatch" class="nav-link active">METWATCH</button>
+                <button id="nav-forecast" class="nav-link">FORECAST</button>
+            </div>
+        </div>
+
+        <div id="clock-bar" class="clock-bar">
+            </div>
+
+        <div class="nav-right">
+            <button id="settings-btn" class="icon-btn">⚙️</button>
+            
+            <div id="settings-dropdown" class="dropdown-menu hidden">
+                
+                <div class="dropdown-section">
+                    <div class="dropdown-header">THEME</div>
+                    <div class="dropdown-item" id="btn-light">☀️ Light Mode</div>
+                    <div class="dropdown-item" id="btn-dark">🌙 Dark Mode</div>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                <div class="dropdown-section">
+                    <div class="dropdown-header">CONFIGURE CLOCKS</div>
+                    <div id="clock-toggles" class="clock-toggles-container">
+                        </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <main id="page-metwatch" class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Station Data</h3>
+                <div class="tab-container">
+                    <button id="tab-metar" class="tab-btn active">METAR</button>
+                    <button id="tab-taf" class="tab-btn">TAF</button>
+                </div>
+            </div>
+            <div id="obs-feed" class="obs-list">
+                <div style="padding:1rem; color:#888;">Initializing Data...</div>
+            </div>
+        </aside>
+
+        <section class="map-section">
+            <div id="map"></div>
+            
+            <div class="map-controls">
+                <button id="btn-radar" class="layer-btn">
+                    <span class="btn-icon">📡</span> Radar (Loop)
+                </button>
+                <button id="btn-sat" class="layer-btn">
+                    <span class="btn-icon">🛰️</span> Sat (IR)
+                </button>
+            </div>
+
+            <div id="radar-timeline" class="timeline-container hidden">
+                <button id="radar-play" class="timeline-btn">▶</button>
+                <input type="range" id="radar-slider" min="0" max="0" step="1" value="0">
+                <span id="radar-time" class="timeline-time">--:-- Z</span>
+            </div>
+        </section>
+
+    </main>
+
+
+    <main id="page-forecast" class="dashboard-container hidden">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Model Tools</h3>
+            </div>
+            
+            <div class="tool-section">
+                <h4>1. Select Model</h4>
+                <select class="tool-select">
+                    <option>GFS (Global)</option>
+                    <option>NAM (North Am)</option>
+                    <option>HRRR (Rapid)</option>
+                    <option>ECMWF (Euro)</option>
+                </select>
+            </div>
+
+            <div class="tool-section">
+                <h4>2. Select Product</h4>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="fcst-tool" value="skewt" checked>
+                        <span>Skew-T Sounding</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="fcst-tool" value="meteogram">
+                        <span>Meteogram</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="fcst-tool" value="cross-section">
+                        <span>Cross Section</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <div class="info-box">
+                    Click anywhere on the map to generate the selected product.
+                </div>
+            </div>
+        </aside>
+
+        <section class="map-section">
+            <div id="map-forecast"></div>
+        </section>
+
+    </main>
+
+
+    <div id="data-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Product Viewer</h3>
+                <button id="modal-close" class="close-btn">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
